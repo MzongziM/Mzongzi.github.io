@@ -1,0 +1,5 @@
+*{margin: 0;padding: 0;}
+#cheat{position: fixed; left: 0px;top: 0px; width: 1px;height: 1px;background-color: black;display: none;}
+#box{position: absolute;left: 50%;top: 50%;width:320px;height:220px;background-color: aliceblue;margin-top: -150px;margin-left: -200px;padding: 40px;box-shadow: #bfc6cb 3px 3px 5px 1px ;}
+input{width: 320px;}
+#submit{width: 100px;height: 40px;display: block; margin: 30px auto 0;}
