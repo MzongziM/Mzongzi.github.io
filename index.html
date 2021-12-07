@@ -2,10 +2,10 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="js-8-style.css"/>
+		<link rel="stylesheet" type="text/css" href="css/js-8-style.css"/>
 		<title></title>
 	</head>
-	<body onmousedown="cheatActivate(event)">
+	<body>
 		<div id="cheat">
 		</div>
 		<div id="box">
@@ -13,7 +13,7 @@
 				<br>
 				<input type="text" id="inputNumber">
 				<br>
-				<input type="button" id="submit" onclick="examine()" value="开奖" />
+				<input type="button" id="submit" onclick="main()" value="开奖" />
 				<br>
 				<span>本期开奖号码：</span>
 				<br>
@@ -25,115 +25,78 @@
 		</div>
 	</body>
 	<script type="text/javascript">
-		var ifCheat=false;
-		function examine(){
-			var inputNumber=document.getElementById("inputNumber").value;
-			if(inputNumber=="")//检测输入数字不为空
+		var ren=7;
+		var end=getEle("end");
+		function main(){
+		//获取输入的数据
+		var inputNumber=getEle("inputNumber").value;
+		//检测数据是否符合标准
+		if(isStandard(inputNumber)){
+			//创建七位随机数
+			var randomNum=createRandomNumber(ren);
+			getEle("randomNumber").value=randomNum;//显示开奖号码
+			award(comparisonNumber(inputNumber,randomNum));
+			
+		}else{
+			alert("不符合规格");
+		}
+		
+		//比对随机数与输入的数返回相同的位数
+		//返回数字对应的信息
+		}
+		function getEle(id){return document.getElementById(id);}
+		function isStandard(text){//获取一个字符串，检测是否符合标准
+			if(text.length!=7||isNaN(text))
 			{
-				alert("彩票号码不能为空");
+				return false;
 			}else{
-				var inputNumberInt=parseInt(inputNumber);
-				if(inputNumberInt.toString().length!=7)//检测输入数字为7位数
-				{
-					console.log("数字位"+inputNumberInt);
-					alert("请确定输入的彩票号码为7位纯数字！");
-				}
-				else{
-					if(ifCheat){
-						cheat(inputNumberInt);
-					}else{
-						var randomSevenDigitsNumber = createSevenDigitsNumber();
-						showRandomNumber(randomSevenDigitsNumber);//生成随机七位数并显示
-						//对数值进行比对，得出最后结果,返回相同的位数
-						var numbera=clipNumber(inputNumberInt);
-						var numberb=clipNumber(randomSevenDigitsNumber);
-						var sameNumebr=compareNumber(numbera,numberb,7);
-						var text=bonus(sameNumebr);
-						showEndText(text);
-					}
-				}
+				return true;
 			}
 		}
-		//生成一个随机七位数
-		function createSevenDigitsNumber(){
-			do{
-				var a=parseInt(Math.random()*10000000);
-			}while(a.toString().length!=7)
-			return a;
-		}
-		function showRandomNumber(number){
-			var randomNumber=document.getElementById("randomNumber");
-			randomNumber.value=number.toString();
-		}
-		function clipNumber(number){
-			//将number数值裁剪成数组并返回
-			var numberString=number.toString();
-			var numberLength=numberString.length;
-			var Number=[];
-			for (var i=0;i<numberLength;i++) {
-				Number[i]=numberString.substr(i,1);
-			}
-			return Number;
-		}
-		function compareNumber(numbera,numberb,numberLength){
-			var sameNumber=0;
-			for (var i=0;i<numberLength;i++) {
-				if(numbera[i]==numberb[i]){
-					sameNumber++;
-				}
-			}
-			return sameNumber;
-		}
-		function bonus(number){
-			var text;
-			switch(number)
+		function createRandomNumber(digit){//创建一个随机数，digit：随机数位数
+			var randomNumber="";
+			for(var i=0;i<digit;i++)
 			{
+				randomNumber+=parseInt(Math.random()*10);
+			}
+			return randomNumber;
+		}
+		function comparisonNumber(num1,num2){
+			var match=0;
+			for(var i=0;i<ren;i++)
+			{
+				if(num1.charAt(i)==num2.charAt(i)){
+					match++;
+				}
+			}
+			return match;
+		}
+		function award(num){
+			switch(num){
 				case 0:
-					text="未中奖";
+					end.value="真可惜，没有中奖。"
 					break;
 				case 1:
-					text="中奖伍元";
+					end.value="差一点就中奖了，加油！"
 					break;
 				case 2:
-					text="中奖伍拾元";
+					end.value="中奖伍元！"
 					break;
 				case 3:
-					text="中奖伍佰元";
+					end.value="中奖伍拾元！"
 					break;
 				case 4:
-					text="中奖伍仟元";
+					end.value="中奖伍佰元！"
 					break;
 				case 5:
-					text="中奖伍万元";
+					end.value="中奖伍仟元！"
 					break;
 				case 6:
-					text="中奖伍拾万元";
+					end.value="中奖伍万元！"
 					break;
 				case 7:
-					text="中奖伍佰万元";
+					end.value="中奖伍佰万元！"
 					break;
-			}
-			return text;
-		}
-		function showEndText(text){
-			var end=document.getElementById("end");
-			end.value=text;
-		}
-		function cheat(numbera){
-			showRandomNumber(numbera);
-			showEndText("中奖伍佰万元");
-			console.log("作弊完成");
-		}
-		function cheatActivate(event){
-			var cheat=document.getElementById("cheat");
-			if(event.shiftKey==1){
-				if(ifCheat){
-					cheat.style.display="none";
-					ifCheat=false;
-				}else{
-					cheat.style.display="block";
-					ifCheat=true;
-				}
 			}
 		}
 	</script>
